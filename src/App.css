@@ -1,3 +1,6 @@
+body {
+  overflow-y: hidden;
+}
 .Container {
   align-items: center;
   min-height: 100vh;
@@ -29,7 +32,7 @@ img {
   width: 100vw;
   height: 100vh;
   justify-content: center;
-  background-color: #262b36;
+  background-color: black;
 }
 
 video {
@@ -39,7 +42,7 @@ video {
 }
 
 .canvas {
-  border-radius: 2rem !important;
+  border-radius: 2rem!important;
   width: 50%;
 }
 

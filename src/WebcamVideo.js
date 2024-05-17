@@ -1,10 +1,9 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
 import Webcam from "react-webcam";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 
 const WebcamStreamCapture = () => {
     const webcamRef = useRef(null);
     const mediaRecorderRef = useRef(null);
-    const canvasRef = useRef(null);
     const [capturing, setCapturing] = useState(false);
     const [recordedChunks, setRecordedChunks] = useState([]);
     const [blockHeight, setBlockHeight] = useState("Waiting for data");
@@ -23,57 +22,9 @@ const WebcamStreamCapture = () => {
         return () => clearInterval(interval);
     }, []);
 
-    useEffect(() => {
-        if (capturing) {
-            const canvas = canvasRef.current;
-            const context = canvas.getContext("2d");
-            const video = webcamRef.current.video;
-
-            const draw = () => {
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                // Draw the circle and block height text
-                const boxWidth = 75;
-                const boxHeight = 75;
-                const boxX = canvas.width - boxWidth - 20;
-                const boxY = 20;
-
-                context.shadowColor = 'orange';
-                context.shadowBlur = 4;
-                context.shadowOffsetX = 0;
-                context.shadowOffsetY = 0;
-
-                context.strokeStyle = 'red';
-                context.lineWidth = 4;
-                context.beginPath();
-                context.arc(boxX + boxWidth / 2, boxY + boxHeight / 2, boxWidth / 2, 0, 2 * Math.PI);
-                context.stroke();
-
-                context.shadowColor = 'transparent';
-
-                context.fillStyle = 'transparent';
-                context.beginPath();
-                context.arc(boxX + boxWidth / 2, boxY + boxHeight / 2, (boxWidth / 2) - 4, 0, 2 * Math.PI);
-                context.fill();
-
-                context.fillStyle = 'white';
-                context.font = 'bold 1rem Arial';
-                context.textAlign = 'center';
-                context.textBaseline = 'middle';
-                context.fillText(blockHeight, boxX + boxWidth / 2, boxY + boxHeight / 2);
-
-                requestAnimationFrame(draw);
-            };
-
-            draw();
-        }
-    }, [capturing, blockHeight]);
-
     const handleStartCaptureClick = useCallback(() => {
         setCapturing(true);
-        const canvas = canvasRef.current;
-        const stream = canvas.captureStream();
-        mediaRecorderRef.current = new MediaRecorder(stream, {
+        mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
             mimeType: "video/webm"
         });
         mediaRecorderRef.current.addEventListener(
@@ -81,7 +32,7 @@ const WebcamStreamCapture = () => {
             handleDataAvailable
         );
         mediaRecorderRef.current.start();
-    }, [setCapturing, mediaRecorderRef]);
+    }, [webcamRef, setCapturing, mediaRecorderRef]);
 
     const handleDataAvailable = useCallback(
         ({ data }) => {
@@ -95,7 +46,7 @@ const WebcamStreamCapture = () => {
     const handleStopCaptureClick = useCallback(() => {
         mediaRecorderRef.current.stop();
         setCapturing(false);
-    }, [mediaRecorderRef, setCapturing]);
+    }, [mediaRecorderRef, webcamRef, setCapturing]);
 
     const handleDownload = useCallback(() => {
         if (recordedChunks.length) {
@@ -114,17 +65,43 @@ const WebcamStreamCapture = () => {
         }
     }, [recordedChunks]);
 
+    const videoConstraints = {
+        width: 390,
+        height: 390,
+        facingMode: "environment",
+      };
+
     return (
         <div style={{ position: "relative", display: "inline-block" }}>
-            <Webcam audio={false} ref={webcamRef} style={{ width: "100%" }} />
-            <canvas ref={canvasRef} width={640} height={480} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }} />
+            <Webcam audio={false} ref={webcamRef} videoConstraints={videoConstraints}/>
             <div style={{
                 position: "absolute",
-                bottom: "5%",
+                top: "20px",
+                right: "20px",
+                width: "55px",
+                height: "55px",
+                borderWidth: "4px",
+                borderColor: "red",
+                borderStyle: "solid",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 0 0 4px orange",
+                color: "white",
+                fontWeight: "800",
+                fontSize: ".65rem",
+                backgroundColor: "rgba(0, 0, 0, 0.5)"
+            }}>
+                {blockHeight}
+            </div>
+            <div style={{
+                position: "absolute",
+                bottom: "-25%",
                 left: "50%",
                 transform: "translateX(-50%)",
-                width: "50px",
-                height: "50px",
+                width: "45px",
+                height: "45px",
                 borderWidth: "4px",
                 borderColor: "orange",
                 borderStyle: "solid",
@@ -144,13 +121,13 @@ const WebcamStreamCapture = () => {
                     cursor: "pointer"
                 }}></div>
             </div>
-            {recordedChunks.length > 0 && (
+            {/* {recordedChunks.length > 0 && (
                 <button onClick={handleDownload} style={{ position: "absolute", bottom: "20px", right: "20px" }}>
                     Download
                 </button>
-            )}
+            )} */}
         </div>
-    );
+    )
 }
 
 export default WebcamStreamCapture;
