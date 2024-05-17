@@ -1,5 +1,7 @@
 import Webcam from "react-webcam";
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { MdOutlineCameraswitch } from "react-icons/md";
+
 
 const WebcamStreamCapture = () => {
     const webcamRef = useRef(null);
@@ -7,6 +9,7 @@ const WebcamStreamCapture = () => {
     const [capturing, setCapturing] = useState(false);
     const [recordedChunks, setRecordedChunks] = useState([]);
     const [blockHeight, setBlockHeight] = useState("Waiting for data");
+    const [facingMode, setFacingMode] = useState("environment");
 
     useEffect(() => {
         const fetchBlockHeight = () => {
@@ -65,11 +68,15 @@ const WebcamStreamCapture = () => {
         }
     }, [recordedChunks]);
 
+    const toggleFacingMode = () => {
+        setFacingMode((prevFacingMode) => (prevFacingMode === "environment" ? "user" : "environment"));
+    };
+
     const videoConstraints = {
         width: 390,
         height: 390,
-        facingMode: "environment",
-      };
+        facingMode: facingMode,
+    };
 
     return (
         <div style={{ position: "relative", display: "inline-block" }}>
@@ -120,6 +127,24 @@ const WebcamStreamCapture = () => {
                     backgroundColor: capturing ? "red" : "orange",
                     cursor: "pointer"
                 }}></div>
+            </div>
+            <div onClick={toggleFacingMode} style={{
+                position: "absolute",
+                bottom: "-25%",
+                right: "10px",
+                width: "45px",
+                height: "45px",
+                borderWidth: "4px",
+                borderColor: "orange",
+                borderStyle: "solid",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "",
+                cursor: "pointer"
+            }}>
+                <MdOutlineCameraswitch style={{color: 'white',width: "30px", height: "30px"}}/>
             </div>
             {/* {recordedChunks.length > 0 && (
                 <button onClick={handleDownload} style={{ position: "absolute", bottom: "20px", right: "20px" }}>
