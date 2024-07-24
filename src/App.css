@@ -1,3 +1,12 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 body {
   overflow-y: hidden;
 }
@@ -27,12 +36,15 @@ img {
 }
 
 .App {
+  flex: 1;
   display: flex;
   align-items: center;
   width: 100vw;
   height: 100vh;
   justify-content: center;
   background-color: black;
+  flex-direction: column;
+  overflow-y: hidden;
 }
 
 video {
@@ -46,3 +58,35 @@ video {
   width: 50%;
 }
 
+.footer {
+    color: white;
+    font-size: .75rem;
+    font-weight: 800;
+    text-align: center;
+    width: 100%;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    bottom: 5px;
+}
+
+
+/* Desktop and larger screens */
+@media (min-width: 1024px) {
+  .Container {
+    max-width: 786px;
+    height: 780vh;
+  }
+
+  img {
+    max-width: 400px;
+    height: 400px;
+  }
+
+  video {
+    max-width: 400px;
+  }
+
+  .canvas {
+    max-width: 500px;
+  }
+}

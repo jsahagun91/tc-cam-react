@@ -113,11 +113,12 @@ const WebcamStreamCapture = () => {
                 borderColor: "orange",
                 borderStyle: "solid",
                 borderRadius: "50%",
-                display: "flex",
+                // display: "flex",
+                display: "none",
                 alignItems: "center",
                 justifyContent: "center"
             }}>
-                <div onClick={capturing ? handleStopCaptureClick : handleStartCaptureClick} style={{
+                {/* <div onClick={capturing ? handleStopCaptureClick : handleStartCaptureClick} style={{
                     width: "30px",
                     height: "30px",
                     borderWidth: "4px",
@@ -126,7 +127,7 @@ const WebcamStreamCapture = () => {
                     borderRadius: "50%",
                     backgroundColor: capturing ? "red" : "orange",
                     cursor: "pointer"
-                }}></div>
+                }}></div> */}
             </div>
             <div onClick={toggleFacingMode} style={{
                 position: "absolute",
